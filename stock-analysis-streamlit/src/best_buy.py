@@ -5,7 +5,6 @@ from datetime import date, timedelta
 import streamlit as st
 
 #Set Global Variables
-stock_name = ""
 target_stocks = ["MSFT","ABNB","AMZN","AAPL","TSLA"]
 
 def LevenshteinDistance(input_stock, compared_stock):
@@ -124,6 +123,7 @@ def show_best_buy():
     main_container = st.container(border=True)
     main_container.title("Best Buy And Sell Timings")
     col1,col2,col3= main_container.columns([3,2,1])
+    stock_name=""
     #Col 1 used to select date input range
     with col1:
         #Bracket at second keyword to make it a selectable date range
