@@ -11,6 +11,7 @@ options = st.sidebar.radio("Go to", ["Dashboard", "SMA", "Upward/Downward", "Bes
 if options == "Dashboard":
     import dashboard
     dashboard.display_dashboard()
+    dashboard.daily_returns()
 elif options == "SMA":
     import sma
     sma.show_sma()
