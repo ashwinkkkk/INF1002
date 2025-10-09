@@ -7,7 +7,7 @@ import streamlit as st
 #Set Global Variables
 target_stocks = ["MSFT","ABNB","AMZN","AAPL","TSLA"]
 
-def LevenshteinDistance(input_stock, compared_stock):
+def LevenshteinDistance(compared_stock, input_stock):
   distance = [[0] * (len(compared_stock) + 1) for _ in range(len(input_stock)+1)]
 
   #Map out the distance of input stock to an empty string in 2D Array
@@ -40,6 +40,8 @@ def Profit(prices,dates):
       while i < len(prices) - 1 and prices[i] >= prices[i + 1]:
           #If the price of the next day is higher, skip it
           i += 1
+      if i == len(prices)-1:
+         break
       #Assign the current price to be the lowest price to buy at
       lowest_price = prices[i]
       lowprice_date = dates[i]
@@ -112,8 +114,8 @@ def SearchStock(stock_name,start_date,end_date,main_container):
       with col2:
         if output:
             st.write(f"Maybe you meant {output}")
-    except ValueError:
-        #Write in col 1 and 2
+    except:
+        #Write in col 2
         with col2: 
             st.write("Please enter a valid Stock Ticker!")
 
