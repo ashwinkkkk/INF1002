@@ -69,9 +69,14 @@ def SearchStock(stock_name,start_date,end_date,main_container):
       stock = yf.Ticker(stock_name)
       stock_history = stock.history(start=start_date,end=end_date)
 
-      #Get Close values as prices
+      #Check if ticker is valid
+      if stock_history.empty:
+         with col2: 
+            st.write("Please enter a valid Stock Ticker!")
+            return
+      
+      #Get Close values as prices and format to 2dp
       prices = pandas.DataFrame(stock_history).get("Close").tolist()
-      #Format data to 2dp
       prices = [round(float(i), 2) for i in prices]
 
       #Set Date as a column instead of a index when retrieved from yfinance
@@ -116,9 +121,10 @@ def SearchStock(stock_name,start_date,end_date,main_container):
         if output:
             st.write(f"Maybe you meant {output}")
     except:
-        #Write in col 2
         with col2: 
-            st.write("Please enter a valid Stock Ticker!")
+            st.write("Unexpected Error!")
+
+
 
 def show_best_buy():
     main_container = st.container(border=True)
