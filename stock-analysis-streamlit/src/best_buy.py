@@ -8,8 +8,7 @@ import streamlit as st
 target_stocks = ["MSFT","ABNB","AMZN","AAPL","TSLA"]
 
 def LevenshteinDistance(input_stock, compared_stock):
-  i = 0
-  distance = [[0] * (len(compared_stock) + 1) for i in range(len(input_stock)+1)]
+  distance = [[0] * (len(compared_stock) + 1) for _ in range(len(input_stock)+1)]
 
   #Map out the distance of input stock to an empty string in 2D Array
   for i in range(len(input_stock)+1):
@@ -19,7 +18,6 @@ def LevenshteinDistance(input_stock, compared_stock):
     distance[0][j]=j
 
   #Map through array to compare how many operations are needed from the compared stock to input string
-  #Start at 1 because 0 is reserved for the empty string
   for i in range(1,len(input_stock)+1):
     for j in range(1,len(compared_stock)+1):
       #If the character of the strings are the same, then no oepration is needed, so the distance is the same
@@ -30,7 +28,7 @@ def LevenshteinDistance(input_stock, compared_stock):
        distance[i][j] = min(distance[i-1][j],distance[i][j-1],distance[i-1][j-1]) + 1
 
   #At the end of the 2D array, the shortest distance will always be at the end of the 2D array
-  return distance[len(input_stock)][len(compared_stock)]
+  return distance[-1][-1]
 
 def Profit(prices,dates):
   total_profit = 0
@@ -126,13 +124,11 @@ def show_best_buy():
     stock_name=""
     #Col 1 used to select date input range
     with col1:
-        #Bracket at second keyword to make it a selectable date range
         #Setting max date as today and selecting it will give error, so i added +1 day 
         selected_date = st.date_input("Select Date Range",(),max_value=date.today() + timedelta(days=1),width="stretch")
   
     #Col 2 for selecting which stock to search
     with col2:
-        #stock_name = st.selectbox("Select Stock",options= ("MSFT","ABNB","AMZN","AAPL","TSLA"),width="stretch")
         stock_name = st.text_input("Stock Ticker",placeholder="MSFT, ABNB, AMZN, AAPL, TSLA")
 
     #Col 3 for search button
