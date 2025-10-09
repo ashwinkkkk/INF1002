@@ -40,6 +40,7 @@ def Profit(prices,dates):
       while i < len(prices) - 1 and prices[i] >= prices[i + 1]:
           #If the price of the next day is higher, skip it
           i += 1
+          
       if i == len(prices)-1:
          break
       #Assign the current price to be the lowest price to buy at
