@@ -92,6 +92,7 @@ def downloadTicker(ticker:str,start:datetime,end:datetime,interval:str) -> pd.Da
         print(f"Successfully downloaded {ticker}")
     except ValueError:
         print('Ticker Does not exist')
+        print(ValueError)
     return ticker_df
 
 def show_trend_analysis():
@@ -101,17 +102,23 @@ def show_trend_analysis():
     col1, col2, col3 = st.columns(3)
     with col1:
         # Placeholder for user input
-        stock_symbol = st.text_input("Enter Stock Symbol:", "")
+        stock_symbol = st.text_input("Enter Stock Symbol:", "").upper()
 
     with col2:
         today = datetime.date.today()
         one_week_ago = today - datetime.timedelta(days=7)
 
         # user selects a range
-        start_date, end_date = st.date_input(
-            "Select a date range",
-            value=(one_week_ago, today)  # default range
-        )
+        try:
+            start_date, end_date = st.date_input(
+                "Select a date range",
+                value=(one_week_ago, today),  # default range
+                max_value=datetime.date.today() + datetime.timedelta(1)    
+            )
+        except ValueError:
+            st.warning('Select Start & End Date', icon="⚠️")
+            return
+
         st.write("Start:", start_date, " End:", end_date)     
 
     with col3:
@@ -128,9 +135,11 @@ def show_trend_analysis():
     if stock_symbol:
         # Placeholder for analysis logic        
         print(intervals[option])
-        print(f"start_date:{start_date}, end_date:{end_date}")
-
+        print(f"start_date:{start_date}, end_date:{end_date}")        
         ticker_df = downloadTicker(stock_symbol,start_date,end_date,intervals[option])
+        if ticker_df.empty:
+            st.warning(f'Stock: {stock_symbol} does not exist', icon="⚠️")
+            return
         print(f'Open:{ticker_df["Open"]}')
         print(f'High:{ticker_df["High"]}')
         print(f'Low:{ticker_df["Low"]}')
