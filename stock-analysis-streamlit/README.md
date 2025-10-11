@@ -8,10 +8,11 @@ This project is a web application built using Streamlit for stock analysis. It p
 stock-analysis-streamlit
 ├── src
 │   ├── app.py              # Main entry point of the Streamlit application
-│   ├── dashboard.py        # Dashboard section displaying key stock metrics
+│   ├── portfolio.py        # Simulate portfolio
 │   ├── sma.py              # Simple Moving Average (SMA) analysis section
 │   ├── upward_downward.py  # Analysis of stocks trending upward or downward
 │   ├── best_buy.py         # Identifies the best buy stocks
+│   ├── us_inflation.py     # Track and reflect inflation trends
 │   └── utils
 │       └── __init__.py     # Utility functions for shared use across the application
 ├── requirements.txt        # Project dependencies
