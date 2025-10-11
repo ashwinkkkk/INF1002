@@ -5,14 +5,10 @@ st.set_page_config(page_title="Stock Analysis", page_icon=":chart_with_upwards_t
 
 # Navigation
 st.sidebar.title("Navigation")
-options = st.sidebar.radio("Go to", ["Dashboard", "SMA", "Upward/Downward", "Best Buy"])
+options = st.sidebar.radio("Go to", ["SMA", "Upward/Downward", "Best Buy", "Simulation"])
 
 # Load the corresponding page based on the selection
-if options == "Dashboard":
-    import dashboard
-    dashboard.display_dashboard()
-    dashboard.daily_returns()
-elif options == "SMA":
+if options == "SMA":
     import sma
     sma.show_sma()
 elif options == "Upward/Downward":
@@ -21,3 +17,6 @@ elif options == "Upward/Downward":
 elif options == "Best Buy":
     import best_buy
     best_buy.show_best_buy()
+elif options == "Simulation":
+    import portfolio_sim
+    portfolio_sim.user_portfolio()
