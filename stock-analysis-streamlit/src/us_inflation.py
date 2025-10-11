@@ -51,7 +51,7 @@ def main():
     st.set_page_config(page_title="US Macro Analysis", page_icon="📊", layout="wide")
     st.title("US Inflationary Analyser")
 
-    df = load_data_from_local("stock-analysis-streamlit\src\CPI.txt")
+    df = load_data_from_local("./CPI.txt")
     if df.empty:
         st.warning("No valid rows parsed from CPI.txt. Ensure each line is 'MMYY,actual,forecast'."); st.stop()
 
