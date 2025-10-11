@@ -81,8 +81,9 @@ def SearchStock(stock_name,start_date,end_date,main_container):
       total_profit, profit_information = Profit(prices,dates)
 
       #Display graph in column 1
+      graph_data = pandas.DataFrame({"price": prices,"date": dates})
       with col1:
-        st.line_chart(data=prices,x_label="Date", y_label="Price")
+        st.line_chart(data=graph_data,x_label="Date", y_label="Price",x="date",y="price")
       #Display stock table in col 2
       with col2:
         #If theres any profit made
@@ -114,12 +115,12 @@ def SearchStock(stock_name,start_date,end_date,main_container):
       with col2:
         if output:
             st.write(f"Maybe you meant {output}")
+        else:
+            st.write("No Stock Ticker Found!")
     except:
         with col2: 
             st.write("Invalid Stock Ticker!")
-
-
-
+            
 def show_best_buy():
     main_container = st.container(border=True)
     main_container.title("Best Buy And Sell Timings")
