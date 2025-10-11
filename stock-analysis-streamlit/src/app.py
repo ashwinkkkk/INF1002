@@ -5,7 +5,7 @@ st.set_page_config(page_title="Stock Analysis", page_icon=":chart_with_upwards_t
 
 # Navigation
 st.sidebar.title("Navigation")
-options = st.sidebar.radio("Go to", ["SMA", "Upward/Downward", "Best Buy", "Simulation"])
+options = st.sidebar.radio("Go to", ["Portfolio", "SMA", "Upward/Downward", "Best Buy", "Inflation analyzer"])
 
 # Load the corresponding page based on the selection
 if options == "SMA":
@@ -17,6 +17,9 @@ elif options == "Upward/Downward":
 elif options == "Best Buy":
     import best_buy
     best_buy.show_best_buy()
-elif options == "Simulation":
+elif options == "Portfolio":
     import portfolio_sim
     portfolio_sim.user_portfolio()
+elif options == "Inflation analyzer":
+    import us_inflation
+    us_inflation.main()    

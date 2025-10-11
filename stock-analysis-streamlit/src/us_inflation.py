@@ -10,6 +10,7 @@ def parse_mmyy(mmyy: str):
     m = int(mmyy[:2]); y = int(mmyy[2:]); y_full = 2000 + y
     return pd.Timestamp(year=y_full, month=m, day=1)
 
+# Read CPI.txt file that contains data in MMYY,actual,forecast format. Store it in a pandas dataFrame.
 def load_data_from_local(path: str) -> pd.DataFrame:
     if not os.path.exists(path):
         st.error(f"'{path}' not found. Place your CPI file in the same folder and name it 'CPI.txt'."); st.stop()
@@ -28,7 +29,7 @@ def load_data_from_local(path: str) -> pd.DataFrame:
                 continue
     return pd.DataFrame(rows, columns=["date", "actual", "forecast", "mmyy"]).sort_values("date")
 
-# Calculates the OLS slope (rate of change per step)
+# This is the core function that computes the linear trend (slope) of the CPI data agains the time.
 def slope_ols(y: np.ndarray) -> float:
     y = np.asarray(y, float); n = len(y)
     if n < 2: return np.nan
@@ -38,18 +39,19 @@ def slope_ols(y: np.ndarray) -> float:
     den = np.sum((x - xm)**2)
     return num / den if den != 0 else np.nan
 
-# Classifies slope as Uptrend / Downtrend / Stable
+# Classifies slope as Uptrend / Downtrend / Stable based on the slope calculated.
 def classify_trend(slope: float, tol: float) -> str:
     if np.isnan(slope): return "Insufficient data"
     if slope > tol: return "Uptrend"
     if slope < -tol: return "Downtrend"
     return "Stable"
 
+# This is the main function that is called when user clicks on "Inflation analyzer"
 def main():
     st.set_page_config(page_title="US Macro Analysis", page_icon="📊", layout="wide")
     st.title("US Inflationary Analyser")
 
-    df = load_data_from_local("CPI.txt")
+    df = load_data_from_local("stock-analysis-streamlit\src\CPI.txt")
     if df.empty:
         st.warning("No valid rows parsed from CPI.txt. Ensure each line is 'MMYY,actual,forecast'."); st.stop()
 
@@ -59,6 +61,7 @@ def main():
     horizons = [3, 6, 12]
     cards = []
 
+    # Calculates the slope for the latest h months. Also does checks to ensure data input is valid.
     for h in horizons:
         if len(y) >= 2:
             h_use = min(h, len(y))
@@ -79,6 +82,7 @@ def main():
         else:
             col.warning(f"Last {h_use} months: Insufficient data")
 
+    # Plotting the bar chart of CPI data over the months with the Forcasted data as orange circles.
     base = alt.Chart(df).encode(
         x=alt.X("month:N", sort=list(df["month"]), title="Month"),
         tooltip=[
