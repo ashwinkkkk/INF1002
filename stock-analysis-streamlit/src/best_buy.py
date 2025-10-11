@@ -114,6 +114,8 @@ def SearchStock(stock_name,start_date,end_date,main_container):
       with col2:
         if output:
             st.write(f"Maybe you meant {output}")
+        else:
+            st.write("No Stock Ticker Found!")
     except:
         with col2: 
             st.write("Invalid Stock Ticker!")
