@@ -145,8 +145,8 @@ def show_best_buy():
                 try:
                     end_date = selected_date[1].strftime("%Y-%m-%d")
                     start_date = selected_date[0].strftime("%Y-%m-%d") 
-                    #Only accepts input of more than 4 days
-                    if (selected_date[1] - selected_date[0]).days > 4:
+                    #Only accepts input of more than 4 days, .days returns numeric difference and not the actual amount of days
+                    if (selected_date[1] - selected_date[0]).days >= 4:
                         SearchStock(stock_name,start_date,end_date,main_container)
                     else:
                         with col1:
