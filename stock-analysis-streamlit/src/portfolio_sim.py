@@ -22,14 +22,18 @@ def get_user_profile():
     # Prompts user for profile details
     # Dropdown box
     title = st.selectbox("Title:", ["Mr", "Mrs", "Ms"], index=0)
-    name = st.text_input("Your Name:", placeholder="Michael Scott")
+    name = st.text_input("Your Name:", placeholder="Michael Scott").strip()
     balance = st.number_input("Starting Balance (USD):",
                               min_value=1000,
                               max_value=10000000,
                               value=100000,
                               step=1000,
-                              help="Min 1000, max 10000000."
                               )
+    # Validation for empty input
+    if not name:
+        st.warning("Please enter your name to continue.")
+        # Prevent further execution until valid input
+        st.stop()
     return title, name, balance
 
 
@@ -59,6 +63,22 @@ def get_portfolio_allocation():
     if total_weight != 1:
         st.warning(f"Your total weights sum to {total_weight * 100:.1f}%. Please adjust to 100%.")
         return
+
+    # Validate tickers using yfinance
+    invalid_tickers = []
+    for ticker in portfolio.keys():
+        try:
+            info = yf.Ticker(ticker).info
+            # Some invalid tickers still return a dict but missing key fields
+            if not info or "regularMarketPrice" not in info:
+                invalid_tickers.append(ticker)
+        except Exception:
+            invalid_tickers.append(ticker)
+
+    if invalid_tickers:
+        st.error(f"Invalid ticker(s): {', '.join(invalid_tickers)}. Please correct them.")
+        return
+
     return portfolio
 
 
@@ -69,7 +89,7 @@ def fetch_portfolio_data(portfolio, start_date, end_date):
     data = yf.download(tickers, start=start_date, end=end_date)["Close"]
     # Warning message for empty data
     if data.empty:
-        st.error("⚠️ No data retrieved. Try adjusting the tickers or date range.")
+        st.error("No data retrieved. Try adjusting the tickers or date range.")
         return
     return data
 
@@ -107,9 +127,9 @@ def display_results(title, name, data, returns, portfolio_value):
     st.line_chart(portfolio_value, use_container_width=True)
 
     # Plots a histogram of daily returns, gives a sense of volatility and distribution (bell curve shape).
-    st.subheader("Distribution of Portfolio Daily Returns")
     fig, ax = plt.subplots()
-    returns["Portfolio"].hist(bins=50, ax=ax)
+    ax.hist(returns["Portfolio"], bins=50, color="skyblue", edgecolor="black")
+    ax.set_title("Distribution of Portfolio Daily Returns")
     ax.set_xlabel("Daily Return")
     ax.set_ylabel("Frequency")
     st.pyplot(fig)
@@ -127,8 +147,6 @@ def display_results(title, name, data, returns, portfolio_value):
     st.metric("Volatility (Std Dev)", f"{volatility:.3f}%")
     st.metric("Total Portfolio Return", f"{total_return:.2f}%")
     st.metric("Latest Portfolio Value", f"${portfolio_value[-1]:.2f}")
-
-    # --- User Summary ---
     st.success(f"Simulation complete for {title} {name}.")
 
 
@@ -148,3 +166,4 @@ def user_portfolio():
         if data is not None:
             returns, portfolio_value = calculate_portfolio_returns(data, portfolio, balance)
             display_results(title, name, data, returns, portfolio_value)
+
